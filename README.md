@@ -109,12 +109,6 @@ When I'm not building things, I'm usually:
   <img src="https://streak-stats.demolab.com?user=Shreyas-Agarwal&theme=tokyonight&hide_border=true" />
 </p>
 
-<p align="center">
-  <img height="180em" src="https://github-readme-stats-sigma-five.vercel.app/api?username=Shreyas-Agarwal&show_icons=true&theme=tokyonight&hide_border=true&rank_icon=github" />
-  
-  <img height="180em" src="https://github-readme-stats-sigma-five.vercel.app/api/top-langs/?username=Shreyas-Agarwal&layout=compact&theme=tokyonight&hide_border=true" />
-</p>
-
 ---
 
 ## 🤝 Connect
