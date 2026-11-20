@@ -81,14 +81,6 @@ Smaller projects: [go-event-lab](https://github.com/Shreyas-Agarwal/go-event-lab
 
 ---
 
-## Activity
-
-Counts include private organisation work.
-
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=Shreyas-Agarwal&count_private=true&include_all_commits=true&show=reviews,prs_merged&hide=stars,issues&hide_rank=true&show_icons=true&theme=github_dark&hide_border=true&bg_color=0d1117&title_color=58a6ff&icon_color=8b949e&text_color=c9d1d9" alt="GitHub activity: commits, pull requests, reviews" />
-</p>
-
 ## Selected outcomes
 
 | | |
