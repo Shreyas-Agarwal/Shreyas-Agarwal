@@ -1,170 +1,123 @@
+<h1 align="center">Shreyas Agarwal</h1>
+
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,50:1f6feb,100:58A6FF&height=200&section=header&text=Shreyas%20Agarwal&fontSize=48&fontColor=ffffff&animation=fadeIn&fontAlignY=36&desc=data%20person%20%C2%B7%20systems%20builder%20%C2%B7%20product%20brain&descSize=16&descAlignY=56" width="100%" />
+  Lead engineer and technical product manager<br>
+  System design · data platforms · AI integration
 </p>
 
 <p align="center">
-  <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=500&size=20&pause=1200&color=58A6FF&center=true&vCenter=true&width=640&lines=Data+%E2%86%92+Systems+%E2%86%92+Products+%E2%86%92+Platforms;I+lead+the+build+and+argue+the+roadmap;From+ecosystems+to+distributed+systems;Writing+the+ADR+before+the+code;Probably+overengineering+something+right+now" /></a>
+  <a href="https://linkedin.com/in/shreyasagarwal01"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn" /></a>
 </p>
+
+I design and lead the engineering of a product suite for construction and infrastructure data at a small B2B SaaS company. My work sits between the product question (what should this do, and for whom) and the system question (what has to be true for it to keep working at scale). I write the highest-value parts myself and set the standard for the rest.
+
+I came to software from computational ecology, modelling how plant–pollinator networks hold together and how they fail under perturbation. I still approach systems the same way: follow the information, find where it breaks, and fix the flow before the friction becomes normal.
+
+---
+
+## What I bring
+
+**System design.** Service boundaries, contracts and data flow for a multi-product, multi-tenant suite. I write the design doc or ADR before the build, and convert it into the record once the work ships. I design for the second and third product on the same foundation, not just the first.
+
+**Data architecture.** Layered bronze, silver and gold pipelines, versioned workflows with preview and confirm, draft and publish layers, append-only changelogs and optimistic concurrency. Schema changes on live systems backfill and preserve data, and a destructive reset is an explicit decision.
+
+**Product and technical leadership.** I run client demos, shape the roadmap and set the design language, then turn that into specifications other engineers can build against. I have written first versions of products myself and handed them on, and I step back into the code where it is highest value.
+
+**Reliability.** Job reconciliation without an outbox, circuit breakers, fixes for thundering-herd and N+1 problems, run-level observability, and backup and point-in-time-recovery validation.
+
+**Review and delivery standards.** Work is tracked in issues and reviewed in pull requests. Unplanned fixes get an issue first, and regressions from a refactor are filed and marked in the code. Lint, commit conventions, dependency versions and CI are set once and shared.
+
+---
+
+## Shared foundations
+
+The less visible half of the work is the platform the products stand on.
+
+| | |
+| --- | --- |
+| **Client-side data engine** | A mapping layer between visualisation libraries and DuckDB-WASM in the browser, covering interaction state, query scheduling, SQL generation, tiered caching and hierarchy filtering with predicate pushdown |
+| **Shared UI library** | A component library used across the products, kept separate from the auth and state layer so each can change independently |
+| **Packages and SDKs** | Shared packages and SDKs for platform services, with contracts that can be versioned |
+| **Dependency management** | One place that decides dependency versions across the suite: a pnpm catalog delivered as a config-dependency plugin, so every repo takes the same exact versions through one reviewed pull request |
+| **API gateway** | Reverse proxy and webhook broadcaster, rewritten from Node to Go on the standard library only, with observability and separate test and production instances |
+| **Identity and control plane** | Authentication, licensing, connector uploads and pipeline execution, with short-lived scoped credentials for pipeline runs |
+| **Infrastructure** | AWS accounts, identity, networking and storage as code with OpenTofu, and tenant isolation at the infrastructure level |
+
+## AI integration
+
+- **MCP connectors.** A production connector lets Claude author, validate and preview data pipelines and dashboards against a user's own data. The work is in tool design and scoping, in how identity and access carry through to the agent, and in keeping the human accept step inside the app.
+- **Agent features.** Provider-agnostic agent loops, tool registries, a model gateway with usage accounting, and fixture-based evaluation.
+- **Building with AI.** I write the design doc and the invariants first, the model implements against them, and review checks the result against the spec. That is how components in languages outside my daily stack, such as the C# desktop and Revit pieces, are built. I am not a .NET specialist. What I own there is the contract: what a run is, what a retry may repeat, and what must never be lost.
+
+## Domains
+
+Most of the work is private, so it is described by problem area.
+
+- **Quantity and cost.** BIM-based quantity takeoff, bills of quantities and running-account bills.
+- **Progress tracking.** Progress on a model, or on a location breakdown where there is no model, connected to billing.
+- **Analytics.** Pipelines from raw source data to curated datasets, with dashboards on top.
+- **Notifications.** Telling the right people what changed in their design tools, in the chat they already use.
+- **Automation.** No-code jobs and prebuilt setups for moving, tagging and connecting construction data.
+
+---
+
+## Open source: Transit Intelligence
+
+[**transit-intelligence**](https://github.com/Shreyas-Agarwal/transit-intelligence) is where I am putting my own time. It is an event-driven platform for modelling, analysing and simulating public transit networks, and the project I am reinvesting most in.
+
+**The idea.** Most transit software is built for passengers. Very little is built for the network itself. A delayed tram does not stay isolated: platforms crowd, following vehicles slip, transfers break, and the disruption spreads. Transit Intelligence treats a network the way modern infrastructure treats a distributed system, as something observable and replayable, with an event timeline, historical replay and a propagation graph.
+
+**The design.**
+- Operational state is derived from immutable events, not held as mutable application state, so any past state can be rebuilt by replaying the log.
+- A modular monolith with domain-first layout. Modules own their boundaries and talk only through events or typed gRPC and protobuf contracts.
+- A temporal graph engine, with edge weights driven by delay, congestion and traversal variance.
+- Ingestion of GTFS and GTFS-RT feeds into Redpanda, a crash-recoverable downloader with bounded queues, and OpenTelemetry benchmarks.
+- A Parquet medallion pipeline with Python and SQLMesh analytics.
+- ADRs for the major decisions, and a governance stack of Conventional Commits, DCO, gitleaks, Vale and Renovate.
+
+**Where it stands.** Pre-1.0. Ingestion runs against static GTFS data, while live GTFS-RT integration and the end-to-end path are still ahead. The repository is public so the architecture and decisions can be read and discussed.
+
+Smaller projects: [go-event-lab](https://github.com/Shreyas-Agarwal/go-event-lab) (concurrency and event-processing benchmarks in Go) and [lakehouse-engineering-lab](https://github.com/Shreyas-Agarwal/lakehouse-engineering-lab) (one system implemented from Pandas through to Spark).
+
+---
+
+## Activity
+
+Counts include private organisation work.
 
 <p align="center">
-  <a href="https://linkedin.com/in/shreyasagarwal01"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" /></a>
-  <!-- <img src="https://img.shields.io/badge/Open_to-Senior_%2F_Lead_roles-2ea44f?style=for-the-badge" /> -->
+  <img src="https://github-readme-stats.vercel.app/api?username=Shreyas-Agarwal&count_private=true&include_all_commits=true&show=reviews,prs_merged&hide=stars,issues&hide_rank=true&show_icons=true&theme=github_dark&hide_border=true&bg_color=0d1117&title_color=58a6ff&icon_color=8b949e&text_color=c9d1d9" alt="GitHub activity: commits, pull requests, reviews" />
 </p>
 
-> I came to software from **computational ecology**, modeling how plant–pollinator networks hold together and how they break under perturbation.
-> I still read systems the same way: follow the information, find where it fractures, redesign the flow before the friction becomes normal.
+## Selected outcomes
 
----
+| | |
+| --- | --- |
+| **30 s → 3 s** | Dashboard load time, after moving the analytics engine into the browser |
+| **1.5 days** | A multi-provider auth migration, schema refactor included, shipped ahead of a client demo |
+| **1 week** | A shared UI library built, published and adopted across three products |
+| **1.5%** | Silent data loss caught in a financial pipeline, spanning two fiscal years |
 
-## ⚡ In numbers
-
-<table>
-  <tr>
-    <td align="center" width="33%"><h2>30s → 3s</h2>dashboard load times after I rebuilt the analytics engine to run in the browser</td>
-    <td align="center" width="33%"><h2>1.5 days</h2>to ship a multi-provider auth migration, schema refactor included, ahead of a client demo</td>
-    <td align="center" width="33%"><h2>400+</h2>commits across 12 repos in the last quarter</td>
-  </tr>
-  <tr>
-    <td align="center"><h2>6 → 1</h2>products running on one shared platform I design end to end</td>
-    <td align="center"><h2>1 week</h2>to build, publish and roll a shared UI library out across 3 products</td>
-    <td align="center"><h2>1.5%</h2>silent data loss I caught in a financial pipeline, spanning two fiscal years</td>
-  </tr>
-</table>
-
----
-
-## 🧭 What I actually do
-
-```mermaid
-flowchart LR
-  A[🤝 Client conversations] --> B[🧭 Product & roadmap]
-  B --> C[🎨 UX & UI design]
-  C --> D[🏗️ System design]
-  D --> E[⚙️ Build]
-  E --> F[☁️ Infra & delivery]
-  F --> G[📚 Docs & process]
-  G -. feedback .-> A
-```
-
-The whole loop, at a small B2B SaaS company:
-
-- 🏗️ **Lead engineer.** System design across the product suite, engineering standards, and guiding the rest of the team.
-- 🧭 **Associate PM.** Run client demos, shape features and the roadmap, and own the design language and UI.
-- ☁️ **AWS, end to end.** Org and identity, networking, compute, storage, CI/CD.
-- 🔄 **Data engineering.** Client data integrations, layered pipelines, and the analytics engines on top.
-- 📚 **Docs, process & consulting.** ADRs, design docs, process definition, and business consulting.
-
----
-
-## 🔒 Built under NDA (described loosely)
-
-<details>
-<summary><b>Expand</b></summary>
-<br>
-
-- **In-browser analytics engine.** DuckDB-WASM in Web Workers with a two-tier memory + OPFS cache, hierarchy filtering with predicate pushdown. This is where the 30s → 3s comes from.
-- **Pipeline DSL.** Declarative specs compiled to SQL and run locally via sqlglot, SQLMesh and DuckDB.
-- **Versioned data workflows.** Imports with tree diffs and preview/confirm, draft → publish layers, optimistic concurrency, append-only changelogs, live presence over SSE.
-- **LLM agent features.** Provider-agnostic agent loop, tool registry, model gateway with a usage ledger, and a fixture-based eval harness.
-- **Multi-product platform.** gRPC service contracts, multi-provider auth, regional deployment topology, tenant isolation at the infrastructure level.
-- **Enterprise data integration.** Tolerant parsers for messy source systems, bronze → silver → gold pipelines, run-level observability, desktop agents.
-- **Production hardening.** Job reconciliation without an outbox, circuit breakers, thundering-herd and N+1 fixes, metrics.
-
-</details>
-
----
-
-## 🌱 In the open
-
-<table>
-  <tr>
-    <td>
-      <b><a href="https://github.com/Shreyas-Agarwal/transit-intelligence">🚇 transit-intelligence</a></b><br>
-      Real-time public transit observability on GTFS / GTFS-RT.<br><br>
-      📡 Realtime feed ingestion → Redpanda<br>
-      🔁 Crash-recoverable downloader with bounded queues and OpenTelemetry benchmarks<br>
-      🥉→🥈 Parquet medallion pipeline, Python + SQLMesh analytics<br>
-      🛡️ Full governance stack: Conventional Commits + DCO, gitleaks, Vale, Renovate
-    </td>
-  </tr>
-</table>
-
-🧪 **Labs:** [go-event-lab](https://github.com/Shreyas-Agarwal/go-event-lab) (concurrency & event-processing benchmarks) · [lakehouse-engineering-lab](https://github.com/Shreyas-Agarwal/lakehouse-engineering-lab) (one system, Pandas → Spark)
-
----
-
-## 🛠️ Stack
+## Technical areas
 
 <p>
-  <img src="https://skillicons.dev/icons?i=ts,py,react,nodejs,express,fastapi,postgres,redis,kafka,aws,docker,githubactions,linux" />
+  <img src="https://skillicons.dev/icons?i=ts,py,go,react,nodejs,fastapi,postgres,redis,aws,docker,githubactions,linux&theme=dark" alt="TypeScript, Python, Go, React, Node.js, FastAPI, PostgreSQL, Redis, AWS, Docker, GitHub Actions, Linux" />
 </p>
 <p>
-  <img src="https://img.shields.io/badge/DuckDB-FFF000?style=flat-square&logo=duckdb&logoColor=black" />
-  <img src="https://img.shields.io/badge/SQLMesh-1f6feb?style=flat-square" />
-  <img src="https://img.shields.io/badge/gRPC-244c5a?style=flat-square" />
-  <img src="https://img.shields.io/badge/Flyway-CC0200?style=flat-square&logo=flyway&logoColor=white" />
-  <img src="https://img.shields.io/badge/Turborepo-EF4444?style=flat-square&logo=turborepo&logoColor=white" />
-  <img src="https://img.shields.io/badge/WebAssembly-654FF0?style=flat-square&logo=webassembly&logoColor=white" />
+  <img src="https://img.shields.io/badge/DuckDB-FFF000?style=flat-square&logo=duckdb&logoColor=black" alt="DuckDB" />
+  <img src="https://img.shields.io/badge/SQLMesh-1f6feb?style=flat-square" alt="SQLMesh" />
+  <img src="https://img.shields.io/badge/gRPC-244c5a?style=flat-square" alt="gRPC" />
+  <img src="https://img.shields.io/badge/Flyway-CC0200?style=flat-square&logo=flyway&logoColor=white" alt="Flyway" />
+  <img src="https://img.shields.io/badge/OpenTofu-FFDA18?style=flat-square&logo=opentofu&logoColor=black" alt="OpenTofu" />
+  <img src="https://img.shields.io/badge/Turborepo-EF4444?style=flat-square&logo=turborepo&logoColor=white" alt="Turborepo" />
+  <img src="https://img.shields.io/badge/WebAssembly-654FF0?style=flat-square&logo=webassembly&logoColor=white" alt="WebAssembly" />
 </p>
 
----
-
-## 💬 Things I say too often
-
-<table>
-  <tr>
-    <td align="center" width="50%">
-      <br>🧩<br><br>
-      <b><i>"Most scaling problems are<br>coordination problems in disguise."</i></b>
-      <br><br>
-    </td>
-    <td align="center" width="50%">
-      <br>🩹<br><br>
-      <b><i>"Temporary workarounds are<br>architecture nobody reviewed."</i></b>
-      <br><br>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <br>📝<br><br>
-      <b><i>"Write the ADR<br>before you write the code."</i></b>
-      <br><br>
-    </td>
-    <td align="center">
-      <br>🌋<br><br>
-      <b><i>"Systems fracture long<br>before infrastructure breaks."</i></b>
-      <br><br>
-    </td>
-  </tr>
-</table>
-
-<p align="center">
-  <sub>────────── ✦ ──────────</sub>
-</p>
-
-<h3 align="center"><i>"Good systems reduce cognitive load.<br>Great systems disappear into the workflow."</i></h3>
-
----
-
-## 📈 The receipts
-
-<p align="center">
-  <img src="https://streak-stats.demolab.com?user=Shreyas-Agarwal&theme=tokyonight&hide_border=true&background=0D1117&ring=58A6FF&fire=58A6FF&currStreakLabel=58A6FF" width="80%" />
-</p>
-
-<p align="center">
-  <img src="https://github-readme-activity-graph.vercel.app/graph?username=Shreyas-Agarwal&theme=tokyo-night&hide_border=true&bg_color=0D1117&color=58A6FF&line=1f6feb&point=ffffff&area=true" width="100%" />
-</p>
-
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=Shreyas-Agarwal&show_icons=true&count_private=true&include_all_commits=true&theme=tokyonight&hide_border=true&bg_color=0D1117&title_color=58A6FF&icon_color=58A6FF" width="49%" />
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/github/followers/Shreyas-Agarwal?style=for-the-badge&logo=github&label=Followers&color=1f6feb" />
-  <img src="https://komarev.com/ghpvc/?username=Shreyas-Agarwal&style=for-the-badge&color=58A6FF&label=Profile+views" />
-</p>
-
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:58A6FF,50:1f6feb,100:0d1117&height=110&section=footer" width="100%" />
-</p>
+| | |
+| --- | --- |
+| **Data** | DuckDB and DuckDB-WASM, SQLMesh, Parquet, bronze/silver/gold layering, PostgreSQL, Flyway |
+| **Backend** | TypeScript, Node, Python, FastAPI, Go, gRPC |
+| **Frontend** | React, Web Workers, OPFS caching |
+| **Platform** | AWS, Fargate, OpenTofu, GitHub Actions, Turborepo, pnpm workspaces |
+| **AI** | MCP servers, agent loops, tool registries, model gateways, evaluation harnesses |
+| **Specified and reviewed, not hand-written** | C# desktop and Revit components |
